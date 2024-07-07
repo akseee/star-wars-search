@@ -1,0 +1,83 @@
+:root {
+  color: rgba(255, 255, 255, 0.87);
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  background: url('./assets/star-wars.jpeg') no-repeat center / cover;
+  background-color: #1e1e1e;
+
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: #12166b;
+  font-weight: 500;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #12166b;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  margin: 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 1em;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 0.8em;
+  background-color: #1a1a1a;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: #ffffff;
+  color: #1a1a1a;
+  background-color: #fff;
+  transform: scale(1.1);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+input {
+  width: 40%;
+  margin: 0 50px;
+  border: 1px solid white;
+  border-radius: 8px;
+  padding: 1em;
+  font-size: 1.3em;
+  background-color: #1a1a1a95;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #12202d;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #ffffff5f;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}

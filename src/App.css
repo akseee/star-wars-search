@@ -1,0 +1,19 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 4rem;
+  text-align: center;
+}
+
+.content {
+  display: grid;
+  grid-template-rows: 1fr 5fr;
+}
+
+section {
+  padding: 20px;
+}
+
+.section__result {
+  background-color: #0000009f;
+}
