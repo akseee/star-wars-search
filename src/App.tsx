@@ -1,47 +1,94 @@
-import React from 'react';
 import './App.css';
+import React from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
 import Search from './components/Search';
 import Results from './components/Results';
+import Loader from './components/Loader';
 
 type SearchResult = {
   name: string;
-  description: string;
+  height: string;
+  mass: string;
+  hair_color: string;
+  skin_color: string;
+  eye_color: string;
+  birth_year: string;
+  gender: string;
 };
 
-interface AppState {
-  searchData: SearchResult[] | null; // Замените на реальный тип данных, возвращаемых API
-}
+type AppState = {
+  searchData: SearchResult[];
+  query: string;
+  loading: boolean;
+};
 
-class App extends React.Component<unknown, AppState> {
-  state = {
-    searchData: null
-  };
-  componentDidMount(): void {
-    this.fetchData();
-    localStorage.getItem('searchQuery');
-    console.log(localStorage.getItem('searchQuery'));
+type ApiResponse = {
+  results: SearchResult[];
+  next: string | null;
+};
+
+class App extends React.Component<Record<string, unknown>, AppState> {
+  constructor(props: Record<string, unknown>) {
+    super(props);
+    this.state = {
+      loading: false,
+      searchData: [],
+      query: ''
+    };
   }
 
-  fetchData = (query = '') => {
-    // Логика выполнения запроса к API
-    // Здесь должен быть реальный URL API и логика для отправки запроса
-    // Для примера используем заглушку
-    const apiUrl = `https://swapi.dev/api/${query}`;
+  componentDidMount(): void {
+    const savedQuery = localStorage.getItem('searchQuery');
+    if (savedQuery) {
+      this.setState({ query: savedQuery });
+      this.fetchData(savedQuery);
+    } else {
+      this.fetchData('');
+    }
+  }
 
-    fetch(apiUrl)
-      .then((response) => {
+  fetchAllPages = async (url: string): Promise<SearchResult[]> => {
+    let allResults: SearchResult[] = [];
+    let currentPageUrl: string | null = url;
+
+    while (currentPageUrl) {
+      try {
+        const response: Response = await fetch(currentPageUrl);
         if (!response.ok) {
-          throw new Error('Network response answered with an errror');
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return response.json();
-      })
-      .then((data) => {
-        this.setState({ searchData: data });
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
+        const data: ApiResponse = await response.json();
+
+        if (data.results && Array.isArray(data.results)) {
+          allResults = allResults.concat(data.results);
+        }
+
+        currentPageUrl = data.next;
+      } catch (error) {
+        console.error('Fetch error: ', error);
+        break;
+      }
+    }
+
+    return allResults;
+  };
+
+  fetchData = async (query: string): Promise<void> => {
+    this.setState({ loading: true });
+
+    try {
+      const allResults = await this.fetchAllPages(
+        'https://swapi.dev/api/people/'
+      );
+      const filteredResults = allResults.filter((item) =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+      );
+
+      this.setState({ searchData: filteredResults, loading: false });
+    } catch (error) {
+      console.error('Fetch error: ', error);
+      this.setState({ searchData: [], loading: false });
+    }
   };
 
   render() {
@@ -53,7 +100,8 @@ class App extends React.Component<unknown, AppState> {
             <Search fetchData={this.fetchData} />
           </section>
           <section className='section__result'>
-            {searchData && <Results data={searchData} />}
+            <h2>Data Base:</h2>
+            {this.state.loading ? <Loader /> : <Results data={searchData} />}
           </section>
         </div>
       </ErrorBoundary>

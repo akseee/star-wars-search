@@ -9,13 +9,11 @@ class ErrorBoundary extends React.Component<
     this.state = { hasError: false };
   }
 
-  // с помощью этого метода меняем стейт компонента при возникновении ошибки:
   static getDerivedStateFromError(error: Error) {
     console.error('Ошибка поймана в getDerivedStateFromError:', error);
     return { hasError: true };
   }
 
-  // с помощью этого метода логируем информацию об ошибке:
   componentDidCatch(error: Error, info: ErrorInfo) {
     console.log('Возникла ошибка!', error, info);
   }

@@ -4,7 +4,7 @@
   font-weight: 400;
   line-height: 1.5;
   text-rendering: optimizeLegibility;
-  background: url('./assets/star-wars.jpeg') no-repeat center / cover;
+  background: url('./assets/star-wars.jpeg') no-repeat fixed center / cover;
   background-color: #1e1e1e;
 
   color-scheme: light dark;
@@ -67,6 +67,23 @@ input {
   padding: 1em;
   font-size: 1.3em;
   background-color: #1a1a1a95;
+}
+
+ul {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 45px;
+  padding: 0;
+}
+
+li {
+  padding: 5px;
+  list-style: none;
+  background-color: rgba(255, 0, 0, 0.35);
+}
+
+li:hover {
+  transform: scale(1.2);
 }
 
 @media (prefers-color-scheme: light) {
