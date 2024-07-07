@@ -10,21 +10,21 @@ class ErrorBoundary extends React.Component<
   }
 
   static getDerivedStateFromError(error: Error) {
-    console.error('Ошибка поймана в getDerivedStateFromError:', error);
+    console.error('The error is caught in getDerivedStateFromError:', error);
     return { hasError: true };
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.log('Возникла ошибка!', error, info);
+    console.log('An error has occurred!', error, info);
   }
 
   render() {
     if (this.state.hasError) {
       return (
         <section>
-          <h1>Что-то пошло не так :</h1>
+          <h1>Oops. Something went wrong :c</h1>
           <p>
-            В приложении произошла ошибка. Пожалуйста, перезагрузите страницу.
+            In the application, an error has occurred. Please reload the page.
           </p>
         </section>
       );
