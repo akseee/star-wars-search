@@ -1,6 +1,7 @@
 import React, { SyntheticEvent } from 'react';
 import Button from './Button';
 import SearchBar from './SearchBar';
+import BrokenButton from './BrokenButton';
 
 type SearchProps = {
   fetchData: (query: string) => void;
@@ -53,7 +54,7 @@ class Search extends React.Component<SearchProps, SearchState> {
           {' '}
         </SearchBar>
         <Button type='submit'>Search</Button>
-        <Button type='button'>Click to destroy!</Button>
+        <BrokenButton></BrokenButton>
       </form>
     );
   }
