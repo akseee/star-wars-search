@@ -1,63 +1,45 @@
-import React, { SyntheticEvent } from 'react';
-import Button from './Button';
-import SearchBar from './SearchBar';
-import BrokenButton from './BrokenButton';
+import React, { FC, SyntheticEvent, useEffect, useState } from 'react';
+import { Button } from './ui/Button';
+import { SearchBar } from './ui/SearchBar';
 
 type SearchProps = {
   fetchData: (query: string) => void;
 };
+export const Search: FC<SearchProps> = ({ fetchData }) => {
+  const [query, setQuery] = useState('');
 
-type SearchState = {
-  query: string;
-};
-
-class Search extends React.Component<SearchProps, SearchState> {
-  state: SearchState = {
-    query: ''
-  };
-  constructor(props: SearchProps) {
-    super(props);
-    this.handlesubmit = this.handlesubmit.bind(this);
-  }
-  componentDidMount(): void {
+  useEffect(() => {
     const savedQuery = localStorage.getItem('searchQuery');
     if (savedQuery) {
-      this.setState({ query: savedQuery });
+      setQuery(savedQuery);
     }
-  }
+  }, []);
 
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ query: e.target.value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
   };
 
-  handlesubmit(e: SyntheticEvent) {
+  const handlesubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    const trimmedQuery = this.state.query.trim();
+    const trimmedQuery = query.trim();
     if (trimmedQuery) {
       localStorage.setItem('searchQuery', trimmedQuery);
-      this.props.fetchData(trimmedQuery);
+      fetchData(trimmedQuery);
     } else {
-      this.props.fetchData('');
+      fetchData('');
       localStorage.removeItem('searchQuery');
     }
-  }
-  render() {
-    return (
-      <form onSubmit={this.handlesubmit}>
-        <SearchBar
-          type='text'
-          name='search'
-          placeholder='Enter a character within the Star Wars universe'
-          value={this.state.query}
-          onChange={this.handleChange}
-        >
-          {' '}
-        </SearchBar>
-        <Button type='submit'>Search</Button>
-        <BrokenButton></BrokenButton>
-      </form>
-    );
-  }
-}
-
-export default Search;
+  };
+  return (
+    <form onSubmit={handlesubmit}>
+      <SearchBar
+        type='text'
+        name='search'
+        placeholder='Enter a character within the Star Wars universe'
+        value={query}
+        onChange={handleChange}
+      />
+      <Button type='submit'>Search</Button>
+    </form>
+  );
+};

@@ -1,7 +1,7 @@
 import React, { ErrorInfo } from 'react';
 
 class ErrorBoundary extends React.Component<
-  { children: React.ReactNode },
+  { children?: React.ReactNode },
   { hasError: boolean }
 > {
   constructor(props: { children: React.ReactNode }) {

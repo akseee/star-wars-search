@@ -1,29 +1,18 @@
 import './App.css';
 import React from 'react';
-import ErrorBoundary from './components/ErrorBoundary';
-import Search from './components/Search';
-import Results from './components/Results';
-import Loader from './components/Loader';
-
-type SearchResult = {
-  name: string;
-  height: string;
-  mass: string;
-  hair_color: string;
-  skin_color: string;
-  eye_color: string;
-  birth_year: string;
-  gender: string;
-};
+import { Results } from './components/pages/Results';
+import Loader from './utils/Loader';
+import { ResultItem } from './services/types';
+import { Search } from './components/Search';
 
 type AppState = {
-  searchData: SearchResult[];
+  searchData: ResultItem[];
   query: string;
   loading: boolean;
 };
 
 type ApiResponse = {
-  results: SearchResult[];
+  results: ResultItem[];
   next: string | null;
 };
 
@@ -47,8 +36,8 @@ class App extends React.Component<Record<string, unknown>, AppState> {
     }
   }
 
-  fetchAllPages = async (url: string): Promise<SearchResult[]> => {
-    let allResults: SearchResult[] = [];
+  fetchAllPages = async (url: string): Promise<ResultItem[]> => {
+    let allResults: ResultItem[] = [];
     let currentPageUrl: string | null = url;
 
     while (currentPageUrl) {
@@ -94,17 +83,15 @@ class App extends React.Component<Record<string, unknown>, AppState> {
   render() {
     const { searchData } = this.state;
     return (
-      <ErrorBoundary>
-        <div className='content'>
-          <section className='section__search'>
-            <Search fetchData={this.fetchData} />
-          </section>
-          <section className='section__result'>
-            <h2>Data Base:</h2>
-            {this.state.loading ? <Loader /> : <Results data={searchData} />}
-          </section>
-        </div>
-      </ErrorBoundary>
+      <div>
+        <section className='section__search'>
+          <Search fetchData={this.fetchData} />
+        </section>
+        <section className='section__result'>
+          <h2>Data Base:</h2>
+          {this.state.loading ? <Loader /> : <Results data={searchData} />}
+        </section>
+      </div>
     );
   }
 }

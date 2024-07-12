@@ -10,13 +10,14 @@
   margin-bottom: 40px;
 }
 
-.result-name {
-  font-weight: bold;
-  font-size: 1.5em;
+.wide-grid {
+  grid-template-columns: auto;
 }
 
-.result {
-  grid-template-columns: auto;
+.pagination {
+  display: flex;
+  flex-direction: row;
+  gap: 3em;
 }
 
 .loader-container {
