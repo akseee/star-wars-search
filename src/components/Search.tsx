@@ -3,7 +3,7 @@ import { Button } from './ui/Button';
 import { SearchBar } from './ui/SearchBar';
 
 type SearchProps = {
-  fetchData: (query: string) => void;
+  fetchData?: (query: string) => void;
 };
 export const Search: FC<SearchProps> = ({ fetchData }) => {
   const [query, setQuery] = useState('');
@@ -24,9 +24,9 @@ export const Search: FC<SearchProps> = ({ fetchData }) => {
     const trimmedQuery = query.trim();
     if (trimmedQuery) {
       localStorage.setItem('searchQuery', trimmedQuery);
-      fetchData(trimmedQuery);
+      fetchData!(trimmedQuery);
     } else {
-      fetchData('');
+      fetchData!('');
       localStorage.removeItem('searchQuery');
     }
   };

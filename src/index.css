@@ -13,11 +13,9 @@
 }
 
 a {
+  color: inherit;
   font-weight: 500;
   text-decoration: inherit;
-}
-a:hover {
-  color: #8e241a;
 }
 
 body {

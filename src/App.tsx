@@ -51,15 +51,13 @@ export const App = () => {
   };
 
   return (
-    <div>
-      <section className='section__search'>
-        <Search fetchData={fetchData} />
-      </section>
-      <section className='section__result'>
+    <div className='page'>
+      <Search fetchData={fetchData} />
+      <div className='data'>
         <h2>Data Base:</h2>
         <Pagination />
         <Results data={state.searchData} />
-      </section>
+      </div>
     </div>
   );
 };

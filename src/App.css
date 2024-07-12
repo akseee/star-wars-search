@@ -5,11 +5,6 @@
   text-align: center;
 }
 
-.section__search {
-  align-self: center;
-  margin-bottom: 40px;
-}
-
 .results {
   display: grid;
   grid-template-columns: auto;
@@ -20,10 +15,14 @@
 }
 
 .details {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  flex: 1;
+  width: 100%;
 }
+/* .details.loading {
+  opacity: 0.25;
+  transition: opacity 200ms;
+  transition-delay: 200ms;
+} */
 
 .side-card {
   padding: 5em;
