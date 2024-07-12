@@ -10,8 +10,38 @@
   margin-bottom: 40px;
 }
 
+.results {
+  display: grid;
+  grid-template-columns: auto;
+}
+
 .wide-grid {
   grid-template-columns: auto;
+}
+
+.details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.side-card {
+  padding: 5em;
+  color: black;
+  font-size: 1.5em;
+  background-color: #ffffffd4;
+}
+
+.side-card span strong {
+  color: red;
+}
+
+.side-card span {
+  margin: 0.5em;
+}
+
+.detailed-card span {
+  display: block;
 }
 
 .pagination {

@@ -2,8 +2,9 @@ import './App.css';
 import { useEffect, useState } from 'react';
 import { Results } from './components/pages/Results';
 import { ResultItem } from './services/types';
-import { Search } from './components/Search';
 import { fetchAllPages } from './services/api';
+import { Pagination } from './components/ui/Pagination';
+import { Search } from './components/Search';
 
 type AppState = {
   searchData: ResultItem[];
@@ -17,6 +18,8 @@ const initialState: AppState = {
 
 export const App = () => {
   const [state, setState] = useState(initialState);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [perPage, setPerPage] = useState(10);
 
   useEffect(() => {
     const savedQuery = localStorage.getItem('searchQuery');
@@ -54,6 +57,7 @@ export const App = () => {
       </section>
       <section className='section__result'>
         <h2>Data Base:</h2>
+        <Pagination />
         <Results data={state.searchData} />
       </section>
     </div>
