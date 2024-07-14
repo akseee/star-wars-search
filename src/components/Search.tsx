@@ -2,12 +2,14 @@ import React, { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { Button } from './ui/Button';
 import { SearchBar } from './ui/SearchBar';
 import useStorageQuery from '../hooks/useStorageQuery';
+import { useNavigate } from 'react-router-dom';
 
 type SearchProps = {
   filteredData: (query: string) => void;
   fetchData: () => void;
 };
 export const Search: FC<SearchProps> = ({ filteredData, fetchData }) => {
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [
     searchQuery,
@@ -15,6 +17,7 @@ export const Search: FC<SearchProps> = ({ filteredData, fetchData }) => {
     saveQueryToLocalStorage,
     removeQueryFromLocalStorage
   ] = useStorageQuery('searchQuery', '');
+  // const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     if (searchQuery) {
@@ -23,7 +26,8 @@ export const Search: FC<SearchProps> = ({ filteredData, fetchData }) => {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
+    const search = e.target.value;
+    setQuery(search);
   };
 
   const handlesubmit = (e: SyntheticEvent) => {
@@ -34,8 +38,9 @@ export const Search: FC<SearchProps> = ({ filteredData, fetchData }) => {
       setSearchQuery(trimmedQuery);
       filteredData(trimmedQuery);
     } else {
-      fetchData();
       removeQueryFromLocalStorage();
+      fetchData();
+      navigate('/');
     }
   };
 

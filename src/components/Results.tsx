@@ -26,6 +26,7 @@ export const Results: FC<ResultFieldProps> = ({ data, isLoading }) => {
             <NavLink
               to={`/${item.name}`}
               className={({ isActive }) => (isActive ? 'card-active' : '')}
+              state={item}
             >
               <PreviewCard item={item} />
             </NavLink>

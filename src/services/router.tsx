@@ -11,7 +11,7 @@ export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<MainPage />}>
       <Route path='*' element={<ErrorPage />} />
-      <Route path='/:name' element={<DetaieldView />} />
+      <Route path=':name' element={<DetaieldView />} />
     </Route>
   )
 );
