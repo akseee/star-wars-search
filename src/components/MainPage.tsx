@@ -38,11 +38,9 @@ export const MainPage = () => {
         const result = await fetchAllPages();
         setState((prevState) => ({
           ...prevState,
-          data: result
+          data: result,
+          searchData: savedQuery ? filterResults(result, savedQuery) : []
         }));
-        if (savedQuery) {
-          applyFilter(savedQuery, result);
-        }
       } catch (error) {
         console.log('Fetching application data error: ', error);
       } finally {
