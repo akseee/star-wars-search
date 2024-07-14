@@ -8,7 +8,7 @@ const App: FC = () => {
   return (
     <Routes>
       <Route path='/' element={<MainPage />}>
-        <Route path=':name' element={<DetaieldView />} />
+        <Route path='/:name' element={<DetaieldView />} />
       </Route>
       <Route path='*' element={<ErrorPage />} />
     </Routes>

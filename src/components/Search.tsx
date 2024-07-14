@@ -40,6 +40,7 @@ export const Search: FC = () => {
     } else {
       removeQueryFromLocalStorage();
       navigate('/');
+      setSearchQuery('');
     }
   };
 
