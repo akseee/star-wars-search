@@ -7,11 +7,10 @@ type CardProps = {
 
 export const CardDetailed: FC<CardProps> = ({ item }) => {
   return (
-    <div className={`detailed-card`}>
+    <div>
       <span
         style={{
-          fontWeight: 'bold',
-          fontSize: '2em'
+          fontWeight: 'bold'
         }}
       >
         {item.name}

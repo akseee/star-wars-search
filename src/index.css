@@ -66,17 +66,6 @@ input {
   background-color: #1a1a1a95;
 }
 
-li {
-  border-radius: 15px;
-  list-style: none;
-  background-color: rgba(255, 0, 0, 0.35);
-  transition: all 0.3s ease-in-out;
-}
-
-li:hover {
-  transform: scale(1.2);
-}
-
 li a {
   display: block;
   border: 1px solid transparent;

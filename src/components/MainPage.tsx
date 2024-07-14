@@ -1,32 +1,35 @@
 import { useEffect, useState } from 'react';
 import { ResultItem } from '../services/types';
 import { fetchAllPages } from '../services/api';
-import { Pagination } from './ui/Pagination';
 import { Search } from './Search';
-import { Outlet, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import useStorageQuery from '../hooks/useStorageQuery';
 import filterResults from '../utils/FilterResults';
 import { Results } from './Results';
+import { Pagination } from './ui/Pagination';
 
 type AppState = {
   data: ResultItem[];
   searchData: ResultItem[];
-  prevPage: number | null;
-  nextPage: number | null;
 };
 
 const initialState: AppState = {
   data: [],
-  searchData: [],
-  prevPage: null,
-  nextPage: 2
+  searchData: []
 };
+
 export const MainPage = () => {
   const [state, setState] = useState(initialState);
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+
+  const [searchParams, setSearchParams] = useSearchParams();
   const [savedQuery] = useStorageQuery('searchQuery', '');
-  const [isCardVisible] = useState(false);
-  const [searchParams] = useSearchParams();
+  const currentQuery = searchParams.get('search') || '';
+
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,33 +68,56 @@ export const MainPage = () => {
   };
 
   useEffect(() => {
-    const searchValue = searchParams.get('search') || '';
-    if (searchValue) {
-      applyFilter(searchValue, state.data);
+    if (currentQuery) {
+      applyFilter(currentQuery, state.data);
     } else {
       setState((prevState) => ({
         ...prevState,
         searchData: []
       }));
     }
-  }, [searchParams, state.data]);
+  }, [currentQuery, state.data]);
+
+  const handleNextPage = () => {
+    console.log(location);
+    navigate('/');
+    const totalPages = Math.ceil(
+      (state.searchData.length || state.data.length) / itemsPerPage
+    );
+    if (currentPage < totalPages) {
+      setSearchParams({ page: (currentPage + 1).toString() });
+    }
+  };
+
+  const handlePrevPage = () => {
+    navigate('/');
+    console.log(location);
+    if (currentPage > 1) {
+      setSearchParams({ page: (currentPage - 1).toString() });
+      console.log(location);
+    }
+  };
+
+  const paginatedData = (
+    state.searchData.length !== 0 ? state.searchData : state.data
+  ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className='page'>
       <Search />
       <div className='data'>
         <h2>Starwars database:</h2>
-        <Pagination
-          onNext={() => console.log('nextpage')}
-          onPrev={() => console.log('prevpage')}
-        />
-        <div className={`${isCardVisible ? 'not-hidden' : 'hidden'} results`}>
-          <Results
-            data={state.searchData.length !== 0 ? state.searchData : state.data}
-            isLoading={isLoading}
+        {!isLoading && (
+          <Pagination
+            onNext={handleNextPage}
+            onPrev={handlePrevPage}
+            currentPage={currentPage}
+            totalPages={Math.ceil(
+              (state.searchData.length || state.data.length) / itemsPerPage
+            )}
           />
-          <Outlet />
-        </div>
+        )}
+        <Results data={paginatedData} isLoading={isLoading} />
       </div>
     </div>
   );
