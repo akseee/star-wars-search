@@ -1,100 +1,95 @@
 import { useEffect, useState } from 'react';
 import { ResultItem } from '../services/types';
-import { fetchAllPages, getResultApi, URL } from '../services/api';
+import { fetchAllPages } from '../services/api';
 import { Pagination } from './ui/Pagination';
 import { Search } from './Search';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useSearchParams } from 'react-router-dom';
 import useStorageQuery from '../hooks/useStorageQuery';
 import filterResults from '../utils/FilterResults';
 import { Results } from './Results';
 
 type AppState = {
+  data: ResultItem[];
   searchData: ResultItem[];
-  prevPage: string | null;
-  nextPage: string | null;
+  prevPage: number | null;
+  nextPage: number | null;
 };
 
 const initialState: AppState = {
+  data: [],
   searchData: [],
   prevPage: null,
-  nextPage: null
+  nextPage: 2
 };
-
 export const MainPage = () => {
   const [state, setState] = useState(initialState);
   const [isLoading, setIsLoading] = useState(false);
   const [savedQuery] = useStorageQuery('searchQuery', '');
   const [isCardVisible] = useState(false);
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    setIsLoading(true);
-    if (savedQuery) {
-      filteredData(savedQuery);
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const result = await fetchAllPages();
+        setState((prevState) => ({
+          ...prevState,
+          data: result
+        }));
+        if (savedQuery) {
+          applyFilter(savedQuery, result);
+        }
+      } catch (error) {
+        console.log('Fetching application data error: ', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, [savedQuery]);
+
+  const applyFilter = (query: string, data: ResultItem[]) => {
+    if (query !== '') {
+      const filteredResults = filterResults(data, query);
+      setState((prevState) => ({
+        ...prevState,
+        searchData: filteredResults
+      }));
     } else {
-      fetchDataState();
-    }
-  }, []);
-
-  const fetchDataState = async (uri: string = URL): Promise<void> => {
-    try {
-      const result = await getResultApi(uri);
-      setIsLoading(true);
-      setState((prevState) => ({
-        ...prevState,
-        nextPage: result.next,
-        prevPage: result.previous,
-        searchData: result.results
-      }));
-    } catch (error) {
-      console.log('Fetching application data error: ', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const filteredData = async (query: string): Promise<void> => {
-    try {
-      setIsLoading(true);
-
-      const allResults = await fetchAllPages();
-      const filteredResults = filterResults(allResults, query);
-      setState((prevState) => ({
-        ...prevState,
-        searchData: filteredResults,
-        prevPage: null,
-        nextPage: null
-      }));
-    } catch (error) {
-      console.error('Fetching filtered application data error: ', error);
       setState((prevState) => ({
         ...prevState,
         searchData: []
       }));
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  const handleNextPage = () => {
-    if (state.nextPage) {
-      fetchDataState(state.nextPage);
+  useEffect(() => {
+    const searchValue = searchParams.get('search') || '';
+    if (searchValue) {
+      applyFilter(searchValue, state.data);
+    } else {
+      setState((prevState) => ({
+        ...prevState,
+        searchData: []
+      }));
     }
-  };
-
-  const handlePrevPage = () => {
-    if (state.prevPage) {
-      fetchDataState(state.prevPage);
-    }
-  };
+  }, [searchParams, state.data]);
 
   return (
     <div className='page'>
-      <Search filteredData={filteredData} fetchData={fetchDataState} />
+      <Search />
       <div className='data'>
         <h2>Starwars database:</h2>
-        <Pagination onNext={handleNextPage} onPrev={handlePrevPage} />
+        <Pagination
+          onNext={() => console.log('nextpage')}
+          onPrev={() => console.log('prevpage')}
+        />
         <div className={`${isCardVisible ? 'not-hidden' : 'hidden'} results`}>
-          <Results data={state.searchData} isLoading={isLoading} />
+          <Results
+            data={state.searchData.length !== 0 ? state.searchData : state.data}
+            isLoading={isLoading}
+          />
           <Outlet />
         </div>
       </div>
