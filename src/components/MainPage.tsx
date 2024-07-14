@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { ResultItem } from '../services/types';
 import { fetchAllPages } from '../services/api';
 import { Search } from './Search';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import useStorageQuery from '../hooks/useStorageQuery';
 import filterResults from '../utils/FilterResults';
 import { Results } from './Results';
 import { Pagination } from './ui/Pagination';
+import Loader from '../utils/Loader';
 
 type AppState = {
   data: ResultItem[];
@@ -20,14 +21,13 @@ const initialState: AppState = {
 
 export const MainPage = () => {
   const [state, setState] = useState(initialState);
-  const location = useLocation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [savedQuery] = useStorageQuery('searchQuery', '');
-  const currentQuery = searchParams.get('search') || '';
 
+  const currentQuery = searchParams.get('search') || '';
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
   const itemsPerPage = 10;
 
@@ -79,7 +79,6 @@ export const MainPage = () => {
   }, [currentQuery, state.data]);
 
   const handleNextPage = () => {
-    console.log(location);
     navigate('/');
     const totalPages = Math.ceil(
       (state.searchData.length || state.data.length) / itemsPerPage
@@ -91,10 +90,8 @@ export const MainPage = () => {
 
   const handlePrevPage = () => {
     navigate('/');
-    console.log(location);
     if (currentPage > 1) {
       setSearchParams({ page: (currentPage - 1).toString() });
-      console.log(location);
     }
   };
 
@@ -107,17 +104,20 @@ export const MainPage = () => {
       <Search />
       <div className='data'>
         <h2>Starwars database:</h2>
+        {isLoading && <Loader />}
         {!isLoading && (
-          <Pagination
-            onNext={handleNextPage}
-            onPrev={handlePrevPage}
-            currentPage={currentPage}
-            totalPages={Math.ceil(
-              (state.searchData.length || state.data.length) / itemsPerPage
-            )}
-          />
+          <>
+            <Pagination
+              onNext={handleNextPage}
+              onPrev={handlePrevPage}
+              currentPage={currentPage}
+              totalPages={Math.ceil(
+                (state.searchData.length || state.data.length) / itemsPerPage
+              )}
+            />
+            <Results data={paginatedData} isLoading={isLoading} />
+          </>
         )}
-        <Results data={paginatedData} isLoading={isLoading} />
       </div>
     </div>
   );

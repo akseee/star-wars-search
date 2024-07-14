@@ -13,6 +13,7 @@
 .results {
   transition: all 1s ease-in-out;
 }
+
 .not-hidden.results {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -30,6 +31,9 @@
   grid-template-columns: repeat(2, 1fr);
 }
 
+.not-hidden li:hover {
+  transform: scale(1);
+}
 .detailed-card {
   display: flex;
   flex-direction: column;
@@ -65,16 +69,17 @@
 .pagination {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  margin-bottom: 30px;
   font-weight: bold;
   font-size: 1.3em;
 }
-.pagination button {
-  margin: 0 20px 30px;
-  background-color: #ffffff85;
-}
 
 .card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 15px;
+  padding: 1em;
   list-style: none;
   background-color: rgba(255, 0, 0, 0.35);
   transition: all 0.3s ease-in-out;

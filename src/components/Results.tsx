@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { ResultItem } from '../services/types';
 import { PreviewCard } from './ui/Card';
 
@@ -10,6 +10,7 @@ type ResultFieldProps = {
 
 export const Results: FC<ResultFieldProps> = ({ data, isLoading }) => {
   const [isCardVisible, setIsCardVisible] = useState(false);
+  const location = useLocation();
 
   return (
     <>
@@ -30,11 +31,11 @@ export const Results: FC<ResultFieldProps> = ({ data, isLoading }) => {
                     onClick={() => {
                       setIsCardVisible(true);
                     }}
-                    to={`/${item.name}`}
+                    to={`/${item.name}${location.search}`}
                     className={({ isActive }) =>
                       isActive ? 'card-active' : ''
                     }
-                    state={item}
+                    state={{ data: item, page: location.search }}
                   >
                     <PreviewCard item={item} />
                   </NavLink>
