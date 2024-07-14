@@ -1,17 +1,24 @@
 import React, { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { Button } from './ui/Button';
 import { SearchBar } from './ui/SearchBar';
+import useStorageQuery from '../hooks/useStorageQuery';
 
 type SearchProps = {
-  fetchData?: (query: string) => void;
+  filteredData: (query: string) => void;
+  fetchData: () => void;
 };
-export const Search: FC<SearchProps> = ({ fetchData }) => {
+export const Search: FC<SearchProps> = ({ filteredData, fetchData }) => {
   const [query, setQuery] = useState('');
+  const [
+    searchQuery,
+    setSearchQuery,
+    saveQueryToLocalStorage,
+    removeQueryFromLocalStorage
+  ] = useStorageQuery('searchQuery', '');
 
   useEffect(() => {
-    const savedQuery = localStorage.getItem('searchQuery');
-    if (savedQuery) {
-      setQuery(savedQuery);
+    if (searchQuery) {
+      setQuery(searchQuery);
     }
   }, []);
 
@@ -23,13 +30,15 @@ export const Search: FC<SearchProps> = ({ fetchData }) => {
     e.preventDefault();
     const trimmedQuery = query.trim();
     if (trimmedQuery) {
-      localStorage.setItem('searchQuery', trimmedQuery);
-      fetchData!(trimmedQuery);
+      saveQueryToLocalStorage(trimmedQuery);
+      setSearchQuery(trimmedQuery);
+      filteredData(trimmedQuery);
     } else {
-      fetchData!('');
-      localStorage.removeItem('searchQuery');
+      fetchData();
+      removeQueryFromLocalStorage();
     }
   };
+
   return (
     <form onSubmit={handlesubmit}>
       <SearchBar

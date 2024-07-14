@@ -5,13 +5,4 @@ type CardProps = {
   item: ResultItem;
 };
 
-export const Card: FC<CardProps> = ({ item }) => (
-  <div
-    style={{
-      fontWeight: 'bold',
-      fontSize: '1.5em'
-    }}
-  >
-    {item.name}
-  </div>
-);
+export const PreviewCard: FC<CardProps> = ({ item }) => <>{item.name}</>;

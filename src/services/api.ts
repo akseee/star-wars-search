@@ -1,11 +1,30 @@
 import { ResultItem } from './types';
 
 type ApiResponse = {
-  results: ResultItem[];
+  count: number;
   next: string | null;
+  previous: string | null;
+  results: ResultItem[];
 };
 
-export const fetchAllPages = async (url: string): Promise<ResultItem[]> => {
+export const URL = 'https://swapi.dev/api/people/';
+
+const checkResponse = <T>(res: Response): Promise<T> =>
+  res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
+
+export const getResultApi = (uri: string = URL): Promise<ApiResponse> => {
+  return fetch(uri).then((res) => checkResponse<ApiResponse>(res));
+};
+
+export const getResultListApi = (uri: string = URL): Promise<ResultItem[]> => {
+  return fetch(uri)
+    .then((res) => checkResponse<ApiResponse>(res))
+    .then((data) => data.results);
+};
+
+export const fetchAllPages = async (
+  url: string = URL
+): Promise<ResultItem[]> => {
   let allResults: ResultItem[] = [];
   let currentPageUrl: string | null = url;
 

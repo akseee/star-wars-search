@@ -1,18 +1,35 @@
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-function useStorageQuery(key: string, initialValue: unknown) {
-  const [searchQuery, setSearchQuery] = useState(() => {
+type UseStorageQueryReturnType = [
+  string,
+  React.Dispatch<React.SetStateAction<string>>,
+  (value: string) => void,
+  () => void
+];
+
+function useStorageQuery(
+  key: string,
+  initialValue: string
+): UseStorageQueryReturnType {
+  const [savedQuery, setNewSavedQuery] = useState(() => {
     const savedQuery = localStorage.getItem(key);
-    return savedQuery !== null ? JSON.parse(savedQuery) : initialValue;
+    return savedQuery !== null ? savedQuery : initialValue;
   });
 
-  useEffect(() => {
-    return () => {
-      localStorage.setItem(key, JSON.stringify(searchQuery));
-    };
-  }, [key, searchQuery]);
+  const saveQueryToLocalStorage = (value: string) => {
+    localStorage.setItem(key, value);
+  };
 
-  return [searchQuery, setSearchQuery];
+  const removeQueryFromLocalStorage = () => {
+    localStorage.removeItem(key);
+  };
+
+  return [
+    savedQuery,
+    setNewSavedQuery,
+    saveQueryToLocalStorage,
+    removeQueryFromLocalStorage
+  ];
 }
 
 export default useStorageQuery;

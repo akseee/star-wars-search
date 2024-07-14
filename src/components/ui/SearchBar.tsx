@@ -5,7 +5,7 @@ type TextInput = {
   type: string;
   placeholder?: string;
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export const SearchBar: FC<TextInput> = ({
