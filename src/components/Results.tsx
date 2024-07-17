@@ -31,7 +31,7 @@ export const Results: FC<ResultFieldProps> = ({ data, isLoading }) => {
                     onClick={() => {
                       setIsCardVisible(true);
                     }}
-                    to={`/${item.name}${location.search}`}
+                    to={`${item.name}${location.search}`}
                     className={({ isActive }) =>
                       isActive ? 'card-active' : ''
                     }

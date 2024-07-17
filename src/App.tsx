@@ -1,17 +1,26 @@
 import { FC } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { MainPage } from './components/MainPage';
 import { DetaieldView } from './components/pages/DetailedView';
+import ErrorBoundary from './utils/ErrorBoundary';
 import { ErrorPage } from './components/pages/ErrorPage';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <MainPage />,
+    errorElement: <ErrorPage />,
+    children: [
+      { path: ':name', element: <DetaieldView />, errorElement: <ErrorPage /> }
+    ]
+  }
+]);
 
 const App: FC = () => {
   return (
-    <Routes>
-      <Route path='/' element={<MainPage />}>
-        <Route path='/:name' element={<DetaieldView />} />
-      </Route>
-      <Route path='*' element={<ErrorPage />} />
-    </Routes>
+    <ErrorBoundary>
+      <RouterProvider router={router} />
+    </ErrorBoundary>
   );
 };
 
