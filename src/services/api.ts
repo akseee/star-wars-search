@@ -1,6 +1,6 @@
 import { ResultItem } from './types';
 
-type ApiResponse = {
+export type ApiResponse = {
   count: number;
   next: string | null;
   previous: string | null;
@@ -9,10 +9,19 @@ type ApiResponse = {
 
 export const URL = 'https://swapi.dev/api/people/';
 
-const checkResponse = <T>(res: Response): Promise<T> =>
+export const checkResponse = <T>(res: Response): Promise<T> =>
   res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 
-export const getResultApi = (uri: string = URL): Promise<ApiResponse> => {
+export const getSearchedData = (
+  query?: string,
+  uri: string = URL
+): Promise<ApiResponse> => {
+  return fetch(`${uri}?search=${query}`).then((res) =>
+    checkResponse<ApiResponse>(res)
+  );
+};
+
+export const getBaseData = (uri: string = URL): Promise<ApiResponse> => {
   return fetch(uri).then((res) => checkResponse<ApiResponse>(res));
 };
 

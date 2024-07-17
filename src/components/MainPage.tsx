@@ -1,101 +1,92 @@
 import { useEffect, useState } from 'react';
 import { ResultItem } from '../services/types';
-import { fetchAllPages } from '../services/api';
+
 import { Search } from './Search';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import useStorageQuery from '../hooks/useStorageQuery';
-import filterResults from '../utils/FilterResults';
 import { Results } from './Results';
-import { Pagination } from './ui/Pagination';
 import Loader from '../utils/Loader';
+import { getBaseData, getSearchedData } from '../services/api';
+import { useSearchParams } from 'react-router-dom';
 
 type AppState = {
-  data: ResultItem[];
   searchData: ResultItem[];
+  nextPage: string | null;
+  prevPage: string | null;
 };
 
 const initialState: AppState = {
-  data: [],
-  searchData: []
+  searchData: [],
+  nextPage: '2',
+  prevPage: null
 };
 
 export const MainPage = () => {
   const [state, setState] = useState(initialState);
-  const navigate = useNavigate();
+
+  // const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [savedQuery] = useStorageQuery('searchQuery', '');
+  const [searchParams] = useSearchParams();
+  const [savedQuery] = useStorageQuery('storageQuery', '');
 
-  const currentQuery = searchParams.get('search') || '';
-  const currentPage = parseInt(searchParams.get('page') || '1', 10);
-  const itemsPerPage = 10;
+  // const currentQuery = searchParams.get('search') || '';
+  // const currentPage = parseInt(searchParams.get('page') || '1', 10);
+  // const itemsPerPage = 10;
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const result = await fetchAllPages();
-        setState((prevState) => ({
-          ...prevState,
-          data: result,
-          searchData: savedQuery ? filterResults(result, savedQuery) : []
-        }));
+        const query = searchParams.get('search') || savedQuery || '';
+        if (query) {
+          const data = await getSearchedData(query);
+          console.log(data);
+          setState((prevState) => ({
+            ...prevState,
+            searchData: data.results,
+            nextPage: data.next,
+            prevPage: data.previous
+          }));
+        } else {
+          const data = await getBaseData();
+          console.log(data);
+          setState((prevState) => ({
+            ...prevState,
+            searchData: data.results,
+            nextPage: data.next,
+            prevPage: data.previous
+          }));
+        }
       } catch (error) {
         console.log('Fetching application data error: ', error);
       } finally {
         setIsLoading(false);
+        console.log(savedQuery);
       }
     };
     fetchData();
-  }, [savedQuery]);
+  }, [savedQuery, searchParams]);
 
-  const applyFilter = (query: string, data: ResultItem[]) => {
-    if (query !== '') {
-      const filteredResults = filterResults(data, query);
-      setState((prevState) => ({
-        ...prevState,
-        searchData: filteredResults
-      }));
-    } else {
-      setState((prevState) => ({
-        ...prevState,
-        searchData: []
-      }));
-    }
-  };
+  // const handleNextPage = () => {
+  //   navigate('/');
+  //   const totalPages = Math.ceil(
+  //     (state.searchData.length || state.data.length) / itemsPerPage
+  //   );
+  //   if (currentPage < totalPages) {
+  //     setSearchParams({ page: (currentPage + 1).toString() });
+  //   }
+  // };
 
-  useEffect(() => {
-    if (currentQuery) {
-      applyFilter(currentQuery, state.data);
-    } else {
-      setState((prevState) => ({
-        ...prevState,
-        searchData: []
-      }));
-    }
-  }, [currentQuery, state.data]);
+  // const handlePrevPage = () => {
+  //   navigate('/');
+  //   if (currentPage > 1) {
+  //     setSearchParams({ page: (currentPage - 1).toString() });
+  //   }
+  // };
 
-  const handleNextPage = () => {
-    navigate('/');
-    const totalPages = Math.ceil(
-      (state.searchData.length || state.data.length) / itemsPerPage
-    );
-    if (currentPage < totalPages) {
-      setSearchParams({ page: (currentPage + 1).toString() });
-    }
-  };
-
-  const handlePrevPage = () => {
-    navigate('/');
-    if (currentPage > 1) {
-      setSearchParams({ page: (currentPage - 1).toString() });
-    }
-  };
-
-  const paginatedData = (
-    state.searchData.length !== 0 ? state.searchData : state.data
-  ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  // const paginatedData = (
+  //   state.searchData.length !== 0 ? state.searchData : state.data
+  // ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className='page'>
@@ -105,15 +96,13 @@ export const MainPage = () => {
         {isLoading && <Loader />}
         {!isLoading && (
           <>
-            <Pagination
-              onNext={handleNextPage}
-              onPrev={handlePrevPage}
-              currentPage={currentPage}
-              totalPages={Math.ceil(
-                (state.searchData.length || state.data.length) / itemsPerPage
-              )}
-            />
-            <Results data={paginatedData} isLoading={isLoading} />
+            {/* <Pagination
+              onNext={() => {}}
+              onPrev={() => {}}
+              currentPage={1}
+              totalPages={10}
+            /> */}
+            <Results data={state.searchData} isLoading={isLoading} />
           </>
         )}
       </div>
