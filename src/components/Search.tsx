@@ -1,59 +1,41 @@
-import React, { FC, SyntheticEvent, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Button } from './ui/Button';
 import { SearchBar } from './ui/SearchBar';
+import { Form, useSearchParams } from 'react-router-dom';
 import useStorageQuery from '../hooks/useStorageQuery';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export const Search: FC = () => {
-  const navigate = useNavigate();
-  const [search, setSearch] = useState('');
-  const [
-    searchQuery,
-    setSearchQuery,
-    saveQueryToLocalStorage,
-    removeQueryFromLocalStorage
-  ] = useStorageQuery('searchQuery', '');
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchInput, setSearchInput] = useState(
+    searchParams.get('search') || ''
+  );
 
-  useEffect(() => {
-    if (searchQuery) {
-      setSearch(searchQuery);
-    }
-  }, []);
+  const [, setStorageQuery] = useStorageQuery('storageQuery', '');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const search = e.target.value;
-    setSearch(search);
-    if (search) {
-      setSearchParams({ search });
+  const handleSubmit = () => {
+    const trimmedQuery = searchInput.trim();
+    if (!trimmedQuery) {
+      searchParams.delete('search');
+      setStorageQuery('');
     } else {
-      setSearchParams({});
+      searchParams.set('search', trimmedQuery);
+      setStorageQuery(trimmedQuery);
     }
-  };
-
-  const handlesubmit = (e: SyntheticEvent) => {
-    e.preventDefault();
-    const trimmedQuery = search.trim();
-    if (trimmedQuery) {
-      saveQueryToLocalStorage(trimmedQuery);
-      setSearchQuery(trimmedQuery);
-    } else {
-      removeQueryFromLocalStorage();
-      navigate('/');
-      setSearchQuery('');
-    }
+    setSearchParams(searchParams);
   };
 
   return (
-    <form onSubmit={handlesubmit}>
+    <Form onSubmit={handleSubmit}>
       <SearchBar
-        type='text'
+        type='search'
         name='search'
         placeholder='Enter a character within the Star Wars universe'
-        value={searchParams.get('search') || ''}
-        onChange={handleChange}
+        value={searchInput}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setSearchInput(e.target.value)
+        }
       />
       <Button type='submit'>Search</Button>
-    </form>
+    </Form>
   );
 };
