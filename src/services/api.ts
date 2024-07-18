@@ -7,54 +7,21 @@ export type ApiResponse = {
   results: ResultItem[];
 };
 
-export const URL = 'https://swapi.dev/api/people/';
+export const URL: string = 'https://swapi.dev/api/people/';
+const MAIN_PAGE: number = 1;
 
 export const checkResponse = <T>(res: Response): Promise<T> =>
   res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 
-export const getSearchedData = (
-  query?: string,
+export const getFetchData = (
+  query: string,
+  page: number = MAIN_PAGE,
   uri: string = URL
 ): Promise<ApiResponse> => {
-  return fetch(`${uri}?search=${query}`).then((res) =>
+  const pageParam = `?page=${page}`;
+  const searchParam = query !== '' ? `?search=${query}` : '';
+
+  return fetch(`${uri}${searchParam ? searchParam : pageParam}`).then((res) =>
     checkResponse<ApiResponse>(res)
   );
-};
-
-export const getBaseData = (uri: string = URL): Promise<ApiResponse> => {
-  return fetch(uri).then((res) => checkResponse<ApiResponse>(res));
-};
-
-export const getResultListApi = (uri: string = URL): Promise<ResultItem[]> => {
-  return fetch(uri)
-    .then((res) => checkResponse<ApiResponse>(res))
-    .then((data) => data.results);
-};
-
-export const fetchAllPages = async (
-  url: string = URL
-): Promise<ResultItem[]> => {
-  let allResults: ResultItem[] = [];
-  let currentPageUrl: string | null = url;
-
-  while (currentPageUrl) {
-    try {
-      const response: Response = await fetch(currentPageUrl);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data: ApiResponse = await response.json();
-
-      if (data.results && Array.isArray(data.results)) {
-        allResults = allResults.concat(data.results);
-      }
-
-      currentPageUrl = data.next;
-    } catch (error) {
-      console.error('Fetch error: ', error);
-      break;
-    }
-  }
-
-  return allResults;
 };
