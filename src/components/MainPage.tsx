@@ -5,105 +5,93 @@ import { Search } from './Search';
 import useStorageQuery from '../hooks/useStorageQuery';
 import { Results } from './Results';
 import Loader from '../utils/Loader';
-import { getBaseData, getSearchedData } from '../services/api';
-import { useSearchParams } from 'react-router-dom';
+import { getFetchData } from '../services/api';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Pagination } from './ui/Pagination';
+import { Button } from './ui/Button';
 
 type AppState = {
+  total: number;
   searchData: ResultItem[];
   nextPage: string | null;
   prevPage: string | null;
+  count: number;
 };
 
 const initialState: AppState = {
+  total: 0,
   searchData: [],
   nextPage: '2',
-  prevPage: null
+  prevPage: null,
+  count: 1
 };
 
 export const MainPage = () => {
+  const navigate = useNavigate();
   const [state, setState] = useState(initialState);
+  const [error, setError] = useState(false);
 
-  // const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [savedQuery] = useStorageQuery('storageQuery', '');
 
-  // const currentQuery = searchParams.get('search') || '';
-  // const currentPage = parseInt(searchParams.get('page') || '1', 10);
-  // const itemsPerPage = 10;
+  const currentQuery = searchParams.get('search') || '';
+  const currentPage = parseInt(searchParams.get('page') || '1');
+
+  const handlePageChange = (pageNumber: number) => {
+    setSearchParams({ page: pageNumber.toString() });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const query = searchParams.get('search') || savedQuery || '';
-        if (query) {
-          const data = await getSearchedData(query);
-          console.log(data);
-          setState((prevState) => ({
-            ...prevState,
-            searchData: data.results,
-            nextPage: data.next,
-            prevPage: data.previous
-          }));
-        } else {
-          const data = await getBaseData();
-          console.log(data);
-          setState((prevState) => ({
-            ...prevState,
-            searchData: data.results,
-            nextPage: data.next,
-            prevPage: data.previous
-          }));
-        }
+        const query = currentQuery || savedQuery || '';
+        const data = await getFetchData(query, currentPage);
+        setState((prevState) => ({
+          ...prevState,
+          searchData: data.results,
+          nextPage: data.next,
+          prevPage: data.previous,
+          total: Math.ceil(data.count / 10)
+        }));
       } catch (error) {
-        console.log('Fetching application data error: ', error);
+        console.error('Fetching application data error: ', error);
+        setError(true);
       } finally {
         setIsLoading(false);
-        console.log(savedQuery);
       }
     };
     fetchData();
-  }, [savedQuery, searchParams]);
-
-  // const handleNextPage = () => {
-  //   navigate('/');
-  //   const totalPages = Math.ceil(
-  //     (state.searchData.length || state.data.length) / itemsPerPage
-  //   );
-  //   if (currentPage < totalPages) {
-  //     setSearchParams({ page: (currentPage + 1).toString() });
-  //   }
-  // };
-
-  // const handlePrevPage = () => {
-  //   navigate('/');
-  //   if (currentPage > 1) {
-  //     setSearchParams({ page: (currentPage - 1).toString() });
-  //   }
-  // };
-
-  // const paginatedData = (
-  //   state.searchData.length !== 0 ? state.searchData : state.data
-  // ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  }, [currentQuery, currentPage, searchParams, savedQuery]);
 
   return (
     <div className='page'>
       <Search />
       <div className='data'>
         <h2>Starwars database:</h2>
+        <Pagination
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+          totalPages={state.total}
+        />
         {isLoading && <Loader />}
-        {!isLoading && (
+        {error && (
           <>
-            {/* <Pagination
-              onNext={() => {}}
-              onPrev={() => {}}
-              currentPage={1}
-              totalPages={10}
-            /> */}
-            <Results data={state.searchData} isLoading={isLoading} />
+            <h2>Fetching application data error </h2>
+            <Button
+              onClick={() => {
+                setError(false);
+                navigate(-1);
+              }}
+            >
+              Return
+            </Button>
           </>
+        )}
+        {!isLoading && !error && (
+          <Results data={state.searchData} isLoading={isLoading} />
         )}
       </div>
     </div>
