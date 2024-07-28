@@ -1,44 +1,50 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { CardDetailed } from '../ui/CardDetailed';
-import { useLocation, useOutletContext } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Button } from '../ui/Button';
+import { getPersonData } from '../../services/api';
+import { ResultItem } from '../../services/types';
 
 export const DetaieldView: FC = () => {
   const location = useLocation();
-  const cardRef = useRef<HTMLDivElement>(null);
 
-  const [isCardVisible, setIsCardVisible] =
-    useOutletContext<
-      [boolean, React.Dispatch<React.SetStateAction<boolean>>]
-    >();
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
-      setIsCardVisible(false);
-    }
-  };
+  const url = location.state;
+  const [heroData, setHeroData] = useState<ResultItem | null>(null);
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+    const fetchHero = async () => {
+      if (!url) return;
+      try {
+        const res = await getPersonData(url);
+        setHeroData(res);
+      } catch (error) {
+        console.log('error getching hero');
+      } finally {
+        console.log('Detailed view set up');
+      }
     };
-  }, []);
+    fetchHero();
+  }, [url]);
 
-  if (!location.state?.data) {
-    return null;
-  }
+  // useEffect(() => {
+  //   const handleClickOutside = (event: MouseEvent) => {
+  //     if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
+  //       setIsCardVisible(false);
+  //       navigate('/');
+  //     }
+  //   };
+  //   document.addEventListener('mousedown', handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleClickOutside);
+  //   };
+  // }, [isCardVisible, setIsCardVisible]);
 
   return (
     <>
-      {isCardVisible && (
-        <div ref={cardRef} className='detailed-card'>
-          <Button type='button' onClick={() => setIsCardVisible(false)}>
-            x
-          </Button>
-          <CardDetailed item={location.state.data} />
-        </div>
-      )}
+      <div className='detailed-card'>
+        <Button type='button'>x</Button>
+        <CardDetailed item={heroData} />
+      </div>
     </>
   );
 };

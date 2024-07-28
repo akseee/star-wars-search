@@ -2,13 +2,19 @@ import { FC, ReactNode } from 'react';
 
 type ButtonProps = {
   children: ReactNode;
-  type: 'submit' | 'reset' | 'button' | undefined;
+  disabled?: boolean;
+  type?: 'submit' | 'reset' | 'button' | undefined;
   onClick?: () => void;
 };
 
-export const Button: FC<ButtonProps> = ({ children, type, onClick }) => {
+export const Button: FC<ButtonProps> = ({
+  children,
+  type = 'button',
+  disabled = false,
+  onClick
+}) => {
   return (
-    <button type={type} onClick={onClick}>
+    <button type={type} disabled={disabled} onClick={onClick}>
       {children}
     </button>
   );

@@ -15,13 +15,21 @@ export const checkResponse = <T>(res: Response): Promise<T> =>
 
 export const getFetchData = (
   query: string,
-  page: number = MAIN_PAGE,
-  uri: string = URL
+  page: number = MAIN_PAGE
 ): Promise<ApiResponse> => {
-  const pageParam = `?page=${page}`;
-  const searchParam = query !== '' ? `?search=${query}` : '';
+  const params = new URLSearchParams({
+    page: page.toString()
+  });
 
-  return fetch(`${uri}${searchParam ? searchParam : pageParam}`).then((res) =>
-    checkResponse<ApiResponse>(res)
-  );
+  if (query) {
+    params.append('card', query);
+  }
+
+  const path = `${URL}?${params.toString()}`;
+
+  return fetch(path).then((res) => checkResponse<ApiResponse>(res));
+};
+
+export const getPersonData = (uri: string) => {
+  return fetch(uri).then((res) => checkResponse<ResultItem>(res));
 };

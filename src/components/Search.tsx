@@ -6,19 +6,19 @@ import useStorageQuery from '../hooks/useStorageQuery';
 
 export const Search: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchInput, setSearchInput] = useState(
-    searchParams.get('search') || ''
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get('query') || ''
   );
 
   const [, setStorageQuery] = useStorageQuery('storageQuery', '');
 
   const handleSubmit = () => {
-    const trimmedQuery = searchInput.trim();
+    const trimmedQuery = searchQuery.trim();
     if (!trimmedQuery) {
-      searchParams.delete('search');
+      searchParams.delete('query');
       setStorageQuery('');
     } else {
-      searchParams.set('search', trimmedQuery);
+      searchParams.set('query', trimmedQuery);
       setStorageQuery(trimmedQuery);
     }
     setSearchParams(searchParams);
@@ -30,9 +30,9 @@ export const Search: FC = () => {
         type='search'
         name='search'
         placeholder='Enter a character within the Star Wars universe'
-        value={searchInput}
+        value={searchQuery}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setSearchInput(e.target.value)
+          setSearchQuery(e.target.value)
         }
       />
       <Button type='submit'>Search</Button>

@@ -2,10 +2,11 @@ import { FC } from 'react';
 import { ResultItem } from '../../services/types';
 
 type CardProps = {
-  item: ResultItem;
+  item: ResultItem | null;
 };
 
 export const CardDetailed: FC<CardProps> = ({ item }) => {
+  if (!item) return;
   return (
     <div>
       <span

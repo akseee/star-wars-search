@@ -4,13 +4,13 @@
   padding: 4rem;
   text-align: center;
 }
-/* 
-.hidden {
-  visibility: hidden;
-
-} */
 
 .results {
+  display: flex;
+  flex-grow: 1;
+  gap: 40px;
+  width: 100%;
+  padding: 20px;
   transition: all 1s ease-in-out;
 }
 
@@ -22,7 +22,7 @@
 
 .results__list {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 40px;
   padding: 0;
 }

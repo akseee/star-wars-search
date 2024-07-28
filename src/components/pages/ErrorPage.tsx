@@ -16,9 +16,6 @@ export const ErrorPage: FC = () => {
         Oops!
       </h1>
       <h2>Sorry, an unexpected error has occurred.</h2>
-      <h2>
-        {error.statusText || error.message}: {error.status}
-      </h2>
 
       <Button type='button' onClick={() => navigate('/')}>
         Return to the main page
