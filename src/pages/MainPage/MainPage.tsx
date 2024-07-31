@@ -1,13 +1,15 @@
+import styles from './MainPage.module.css';
+
 import { useEffect, useState } from 'react';
 import { ResultItem } from '../../services/types';
-import styles from './MainPage.module.css';
 import useStorageQuery from '../../hooks/useStorageQuery';
 import { Results } from '../../components/Results/Results';
 import { getFetchData } from '../../services/api';
-import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
-import { Button } from '../../components/ui/Button/Button';
+import { Outlet, useSearchParams } from 'react-router-dom';
 import { Search } from '../../components/Search/Search';
 import { Pagination } from '../../components/Pagination/Pagination';
+import { Header } from '../../components/ui/Header/Header';
+import { Main } from '../../components/ui/Main/Main';
 
 type AppState = {
   total: number;
@@ -26,13 +28,13 @@ const initialState: AppState = {
 };
 
 export const MainPage = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [savedQuery] = useStorageQuery('storageQuery', '');
 
   const [state, setState] = useState(initialState);
-  const [error, setError] = useState<boolean>(false);
+  // const [error, setError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // const currentQuery = searchParams.get('query') || '';
@@ -43,6 +45,8 @@ export const MainPage = () => {
   };
 
   useEffect(() => {
+    console.log(state);
+
     const fetchData = async () => {
       setIsLoading(true);
       try {
@@ -57,48 +61,48 @@ export const MainPage = () => {
         }));
       } catch (error) {
         console.error('Fetching application data error: ', error);
-        setError(true);
+        // setError(true);
       } finally {
         setIsLoading(false);
+        console.log(state);
       }
     };
     fetchData();
   }, [searchParams, savedQuery]);
 
-  const errorElement = (
-    <>
-      <h2>Fetching application data error </h2>
-      <Button
-        onClick={() => {
-          setError(false);
-          navigate(-1);
-        }}
-      >
-        Return
-      </Button>
-    </>
-  );
-
+  // const errorElement = (
+  //   <>
+  //     <h2>Fetching application data error </h2>
+  //     <Button
+  //       onClick={() => {
+  //         setError(false);
+  //         navigate(-1);
+  //       }}
+  //     >
+  //       Return
+  //     </Button>
+  //   </>
+  // );
   return (
     <>
-      <Search />
-      <div>
-        <h2>Starwars database:</h2>
-        <Pagination
-          currentPage={1}
-          onPageChange={handlePageChange}
-          totalPages={state.total}
-        />
-        <div className={styles.results}>
-          {error && errorElement}
-          {!isLoading && (
-            <>
-              <Results data={state.searchData} isLoading={isLoading} />
-              <Outlet />
-            </>
-          )}
+      <Header>
+        <Search />
+      </Header>
+      <Main className={styles.result}>
+        <div className={styles.list}>
+          <Pagination
+            currentPage={1}
+            onPageChange={handlePageChange}
+            totalPages={state.total}
+          />
+          <Results data={state.searchData} isLoading={isLoading} />
         </div>
-      </div>
+        {2 + 2 && (
+          <div className={styles.detailedView}>
+            <Outlet />
+          </div>
+        )}
+      </Main>
     </>
   );
 };

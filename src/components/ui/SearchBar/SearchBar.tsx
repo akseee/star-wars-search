@@ -6,6 +6,7 @@ type TextInput = {
   placeholder?: string;
   value: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
 };
 
 export const SearchBar: FC<TextInput> = ({
@@ -13,12 +14,14 @@ export const SearchBar: FC<TextInput> = ({
   placeholder,
   type,
   value,
-  onChange
+  onChange,
+  className
 }) => {
   return (
     <>
       <label htmlFor={name}>{}</label>
       <input
+        className={className}
         placeholder={placeholder}
         type={type}
         name={name}

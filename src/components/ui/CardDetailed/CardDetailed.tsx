@@ -3,15 +3,18 @@ import { ResultItem } from '../../../services/types';
 
 type CardProps = {
   item: ResultItem | null;
+  className?: string;
 };
 
-export const CardDetailed: FC<CardProps> = ({ item }) => {
+export const CardDetailed: FC<CardProps> = ({ item, className }) => {
   if (!item) return;
   return (
-    <div>
+    <div className={className}>
       <span
         style={{
-          fontWeight: 'bold'
+          fontWeight: 'bold',
+          fontSize: '2em',
+          textShadow: '0px 0px 15px #735a94'
         }}
       >
         {item.name}

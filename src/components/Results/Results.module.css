@@ -1,35 +1,12 @@
-.results {
-  display: flex;
-  flex-grow: 1;
-  gap: 40px;
-  width: 100%;
-  padding: 20px;
-  transition: all 1s ease-in-out;
-}
-
-.not-hidden.results {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2em;
-}
-
 .list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 40px;
-  padding: 0;
-}
-
-.not-hidden .list {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.not-hidden li:hover {
-  transform: scale(1);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  justify-content: center;
+  gap: 30px;
 }
 
 .active {
-  border: 1px solid white;
+  border: 1px solid rgba(255, 255, 255, 0.349);
   border-radius: 15px;
 }
 
@@ -37,13 +14,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: min(200px, 100%);
   border-radius: 15px;
   padding: 1em;
+  color: white;
   list-style: none;
-  background-color: rgba(255, 0, 0, 0.35);
+  background-color: rgba(30, 0, 139, 0.5);
   transition: all 0.3s ease-in-out;
 }
 
 .card:hover {
   transform: scale(1.2);
+}
+
+li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 1px solid transparent;
 }

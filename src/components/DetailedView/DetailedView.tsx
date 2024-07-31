@@ -41,11 +41,11 @@ export const DetaieldView: FC = () => {
   // }, [isCardVisible, setIsCardVisible]);
 
   return (
-    <>
-      <div className={styles.detailedCard}>
-        <Button type='button'>x</Button>
-        <CardDetailed item={heroData} />
-      </div>
-    </>
+    <div className={styles.container}>
+      <Button className={styles.closeButton} type='button'>
+        x
+      </Button>
+      <CardDetailed item={heroData} className={styles.detailedCard} />
+    </div>
   );
 };

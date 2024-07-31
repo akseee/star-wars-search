@@ -5,16 +5,23 @@ type ButtonProps = {
   disabled?: boolean;
   type?: 'submit' | 'reset' | 'button' | undefined;
   onClick?: () => void;
+  className?: string;
 };
 
 export const Button: FC<ButtonProps> = ({
   children,
   type = 'button',
   disabled = false,
-  onClick
+  onClick,
+  className
 }) => {
   return (
-    <button type={type} disabled={disabled} onClick={onClick}>
+    <button
+      className={className}
+      type={type}
+      disabled={disabled}
+      onClick={onClick}
+    >
       {children}
     </button>
   );

@@ -11,20 +11,12 @@ type ResultFieldProps = {
 
 export const Results: FC<ResultFieldProps> = ({ data }) => {
   return (
-    <ul className={`${styles.wideGrid} ${styles.list}`}>
+    <ul className={styles.list}>
       {data.map((item, index) => (
-        <li
-          className={styles.card}
-          key={index}
-          style={{
-            fontWeight: 'bold',
-            fontSize: '1.5em'
-          }}
-        >
+        <li className={styles.card} key={index}>
           <NavLink
             to={`?card=${item.name}`}
             className={({ isActive }) => (isActive ? `styles.active` : '')}
-            state={item.url}
             onClick={() => console.log('card click')}
           >
             <PreviewCard item={item} />

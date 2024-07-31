@@ -1,0 +1,21 @@
+.input {
+  width: 50%;
+  margin: 0 50px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 1em;
+  color: #dddeee;
+  font-weight: bold;
+  font-size: 1.3em;
+  background-color: #5a73949c;
+}
+
+.input::placeholder {
+  color: #7e90a89c;
+}
+
+.button {
+  width: 25%;
+  font-size: 0.95em;
+  background-color: #5a73949c;
+}

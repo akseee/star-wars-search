@@ -23,7 +23,7 @@ export const Pagination: FC<PaginationProps> = ({
       >
         Previous
       </Button>
-      <span>
+      <span className={styles.page}>
         Page {currentPage} of {totalPages}
       </span>
       <Button

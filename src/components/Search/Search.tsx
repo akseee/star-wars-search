@@ -4,6 +4,7 @@ import { Form, useSearchParams } from 'react-router-dom';
 import useStorageQuery from '../../hooks/useStorageQuery';
 import { SearchBar } from '../ui/SearchBar/SearchBar';
 import { Button } from '../ui/Button/Button';
+import styles from './Search.module.css';
 
 export const Search: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -28,6 +29,7 @@ export const Search: FC = () => {
   return (
     <Form onSubmit={handleSubmit}>
       <SearchBar
+        className={styles.input}
         type='search'
         name='search'
         placeholder='Enter a character within the Star Wars universe'
@@ -36,7 +38,9 @@ export const Search: FC = () => {
           setSearchQuery(e.target.value)
         }
       />
-      <Button type='submit'>Search</Button>
+      <Button className={styles.button} type='submit'>
+        Search
+      </Button>
     </Form>
   );
 };
