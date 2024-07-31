@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Button } from '../ui/Button';
+import { Button } from '../../components/ui/Button/Button';
 import { useNavigate, useRouteError } from 'react-router-dom';
 
 export const ErrorPage: FC = () => {

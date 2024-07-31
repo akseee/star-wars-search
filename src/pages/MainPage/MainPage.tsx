@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { ResultItem } from '../services/types';
-
-import { Search } from './Search';
-import useStorageQuery from '../hooks/useStorageQuery';
-import { Results } from './Results';
-import { getFetchData } from '../services/api';
+import { ResultItem } from '../../services/types';
+import styles from './MainPage.module.css';
+import useStorageQuery from '../../hooks/useStorageQuery';
+import { Results } from '../../components/Results/Results';
+import { getFetchData } from '../../services/api';
 import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
-import { Pagination } from './ui/Pagination';
-import { Button } from './ui/Button';
+import { Button } from '../../components/ui/Button/Button';
+import { Search } from '../../components/Search/Search';
+import { Pagination } from '../../components/Pagination/Pagination';
 
 type AppState = {
   total: number;
@@ -80,16 +80,16 @@ export const MainPage = () => {
   );
 
   return (
-    <div className='page'>
+    <>
       <Search />
-      <div className='data'>
+      <div>
         <h2>Starwars database:</h2>
         <Pagination
           currentPage={1}
           onPageChange={handlePageChange}
           totalPages={state.total}
         />
-        <div className={`results`}>
+        <div className={styles.results}>
           {error && errorElement}
           {!isLoading && (
             <>
@@ -99,6 +99,6 @@ export const MainPage = () => {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '../components/ui/Button';
+import { Button } from '../ui/Button/Button';
 
 type brokenState = {
   counter: number;

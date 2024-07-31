@@ -1,5 +1,6 @@
 import { FC } from 'react';
-import { Button } from './Button';
+import { Button } from '../ui/Button/Button';
+import styles from './Pagination.module.css';
 
 type PaginationProps = {
   currentPage: number;
@@ -12,7 +13,7 @@ export const Pagination: FC<PaginationProps> = ({
   onPageChange
 }) => {
   return (
-    <div className='pagination'>
+    <div className={styles.pagination}>
       <Button
         disabled={currentPage === 1}
         type='button'

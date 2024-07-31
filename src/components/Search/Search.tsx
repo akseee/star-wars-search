@@ -1,8 +1,9 @@
 import React, { FC, useState } from 'react';
-import { Button } from './ui/Button';
-import { SearchBar } from './ui/SearchBar';
+
 import { Form, useSearchParams } from 'react-router-dom';
-import useStorageQuery from '../hooks/useStorageQuery';
+import useStorageQuery from '../../hooks/useStorageQuery';
+import { SearchBar } from '../ui/SearchBar/SearchBar';
+import { Button } from '../ui/Button/Button';
 
 export const Search: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();

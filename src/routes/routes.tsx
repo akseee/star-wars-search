@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { MainPage } from '../components/MainPage';
-import { ErrorPage } from '../components/pages/ErrorPage';
-import { DetaieldView } from '../components/pages/DetailedView';
+import { MainPage } from '../pages/MainPage/MainPage';
+import { ErrorPage } from '../pages/ErrorPage/ErrorPage';
+import { DetaieldView } from '../components/DetailedView/DetailedView';
 
 export const router = createBrowserRouter([
   {

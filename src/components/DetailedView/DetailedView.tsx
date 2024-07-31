@@ -1,9 +1,10 @@
 import React, { FC, useEffect, useState } from 'react';
-import { CardDetailed } from '../ui/CardDetailed';
 import { useLocation } from 'react-router-dom';
-import { Button } from '../ui/Button';
 import { getPersonData } from '../../services/api';
 import { ResultItem } from '../../services/types';
+import { CardDetailed } from '../ui/CardDetailed/CardDetailed';
+import { Button } from '../ui/Button/Button';
+import styles from './DetailedView.module.css';
 
 export const DetaieldView: FC = () => {
   const location = useLocation();
@@ -41,7 +42,7 @@ export const DetaieldView: FC = () => {
 
   return (
     <>
-      <div className='detailed-card'>
+      <div className={styles.detailedCard}>
         <Button type='button'>x</Button>
         <CardDetailed item={heroData} />
       </div>

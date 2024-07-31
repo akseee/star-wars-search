@@ -1,7 +1,8 @@
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
-import { ResultItem } from '../services/types';
-import { PreviewCard } from './ui/Card';
+import { ResultItem } from '../../services/types';
+import styles from './Results.module.css';
+import { PreviewCard } from '../ui/Card/Card';
 
 type ResultFieldProps = {
   data: ResultItem[];
@@ -10,10 +11,10 @@ type ResultFieldProps = {
 
 export const Results: FC<ResultFieldProps> = ({ data }) => {
   return (
-    <ul className={`wide-grid results__list`}>
+    <ul className={`${styles.wideGrid} ${styles.list}`}>
       {data.map((item, index) => (
         <li
-          className='card'
+          className={styles.card}
           key={index}
           style={{
             fontWeight: 'bold',
@@ -22,7 +23,7 @@ export const Results: FC<ResultFieldProps> = ({ data }) => {
         >
           <NavLink
             to={`?card=${item.name}`}
-            className={({ isActive }) => (isActive ? 'card-active' : '')}
+            className={({ isActive }) => (isActive ? `styles.active` : '')}
             state={item.url}
             onClick={() => console.log('card click')}
           >
