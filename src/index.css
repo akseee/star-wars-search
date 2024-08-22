@@ -21,7 +21,7 @@ body {
   margin: 0;
   background: linear-gradient(
     0deg,
-    rgb(30, 28, 65) 21%,
+    rgb(4, 1, 63) 5%,
     rgba(2, 0, 36, 0.6678921568627452) 35%,
     rgba(0, 212, 255, 0) 44%,
     rgba(2, 168, 226, 0) 68%,
@@ -41,7 +41,7 @@ button {
 }
 
 button:hover {
-  box-shadow: 0 0 40px 10px rgba(30, 0, 139, 0.5);
+  box-shadow: 0 0 40px 15px rgba(30, 0, 139, 0.8);
   color: inherit;
   background-color: rgba(255, 255, 255, 0.7);
   cursor: pointer;

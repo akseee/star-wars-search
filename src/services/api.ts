@@ -1,3 +1,4 @@
+import { enumSearchParams } from './params';
 import { ResultItem } from './types';
 
 export type ApiResponse = {
@@ -8,28 +9,28 @@ export type ApiResponse = {
 };
 
 export const URL: string = 'https://swapi.dev/api/people/';
-const MAIN_PAGE: number = 1;
+export const MAIN_PAGE: number = 1;
 
 export const checkResponse = <T>(res: Response): Promise<T> =>
   res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 
 export const getFetchData = (
-  query: string,
+  searchQuery: string,
   page: number = MAIN_PAGE
 ): Promise<ApiResponse> => {
   const params = new URLSearchParams({
     page: page.toString()
   });
 
-  if (query) {
-    params.append('card', query);
+  if (searchQuery) {
+    params.append(enumSearchParams.NAME, searchQuery);
   }
 
-  const path = `${URL}?${params.toString()}`;
-
-  return fetch(path).then((res) => checkResponse<ApiResponse>(res));
+  return fetch(`${URL}/?${params.toString()}`).then((res) =>
+    checkResponse<ApiResponse>(res)
+  );
 };
 
-export const getPersonData = (uri: string) => {
-  return fetch(uri).then((res) => checkResponse<ResultItem>(res));
+export const getPersonData = (id: string) => {
+  return fetch(`${URL}/${id}`).then((res) => checkResponse<ResultItem>(res));
 };

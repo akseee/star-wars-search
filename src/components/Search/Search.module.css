@@ -7,15 +7,15 @@
   color: #dddeee;
   font-weight: bold;
   font-size: 1.3em;
-  background-color: #5a73949c;
+  background-color: #8f22229c;
 }
 
 .input::placeholder {
-  color: #7e90a89c;
+  color: #ffffff30;
 }
 
 .button {
   width: 25%;
   font-size: 0.95em;
-  background-color: #5a73949c;
+  background-color: #8f22229c;
 }

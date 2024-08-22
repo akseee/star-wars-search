@@ -7,9 +7,9 @@ import { Button } from '../ui/Button/Button';
 import styles from './Search.module.css';
 
 export const Search: FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(
-    searchParams.get('query') || ''
+    searchParams.get('name') || ''
   );
 
   const [, setStorageQuery] = useStorageQuery('storageQuery', '');
@@ -17,13 +17,13 @@ export const Search: FC = () => {
   const handleSubmit = () => {
     const trimmedQuery = searchQuery.trim();
     if (!trimmedQuery) {
-      searchParams.delete('query');
+      searchParams.delete('name');
       setStorageQuery('');
     } else {
-      searchParams.set('query', trimmedQuery);
+      searchParams.set('name', trimmedQuery);
       setStorageQuery(trimmedQuery);
     }
-    setSearchParams(searchParams);
+    // setSearchParams(searchQuery);
   };
 
   return (

@@ -1,88 +1,92 @@
 import styles from './MainPage.module.css';
 
-import { useEffect, useState } from 'react';
-import { ResultItem } from '../../services/types';
-import useStorageQuery from '../../hooks/useStorageQuery';
-import { Results } from '../../components/Results/Results';
-import { getFetchData } from '../../services/api';
-import { Outlet, useSearchParams } from 'react-router-dom';
-import { Search } from '../../components/Search/Search';
-import { Pagination } from '../../components/Pagination/Pagination';
-import { Header } from '../../components/ui/Header/Header';
-import { Main } from '../../components/ui/Main/Main';
+import { useCallback, useEffect, useState } from 'react';
 
-type AppState = {
+import { Search } from '../../components/Search/Search';
+import { Header } from '../../components/ui/Header/Header';
+import { getFetchData, MAIN_PAGE } from '../../services/api';
+import { ResultItem } from '../../services/types';
+import { Outlet, useSearchParams } from 'react-router-dom';
+import { Main } from '../../components/ui/Main/Main';
+import { Pagination } from '../../components/Pagination/Pagination';
+import { Results } from '../../components/Results/Results';
+import { enumSearchParams } from '../../services/params';
+import useStorageQuery from '../../hooks/useStorageQuery';
+import Loader from '../../components/Loader/Loader';
+
+type PageState = {
   total: number;
-  searchData: ResultItem[];
   nextPage: string | null;
   prevPage: string | null;
-  count: number;
 };
 
-const initialState: AppState = {
+type InfoState = { searchData: ResultItem[] };
+
+const initialInfoState: InfoState = { searchData: [] };
+const initialPageState: PageState = {
   total: 0,
-  searchData: [],
   nextPage: '2',
-  prevPage: null,
-  count: 1
+  prevPage: null
 };
 
 export const MainPage = () => {
-  // const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [savedQuery] = useStorageQuery('storageQuery', '');
+  const currentQuery = searchParams.get(enumSearchParams.NAME) || '';
+  const currentPage = parseInt(searchParams.get(enumSearchParams.PAGE) || '1');
+  const currentCard = searchParams.get(enumSearchParams.CARD || false);
 
-  const [state, setState] = useState(initialState);
-  // const [error, setError] = useState<boolean>(false);
+  const [savedQuery] = useStorageQuery('storaged-query', '');
+
+  const [pageState, setPageState] = useState(initialPageState);
+  const [infoState, setInfoState] = useState(initialInfoState);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // const currentQuery = searchParams.get('query') || '';
-  // const currentPage = parseInt(searchParams.get('page') || '1');
-
-  const handlePageChange = (pageNumber: number) => {
-    setSearchParams({ page: pageNumber.toString() });
-  };
-
   useEffect(() => {
-    console.log(state);
-
     const fetchData = async () => {
-      setIsLoading(true);
       try {
-        // const query = currentQuery || savedQuery || '';
-        const data = await getFetchData('', 1);
-        setState((prevState) => ({
+        setIsLoading(true);
+        const query = currentQuery || savedQuery || '';
+        const data = await getFetchData(query, currentPage);
+        setPageState((prevState) => ({
           ...prevState,
-          searchData: data.results,
           nextPage: data.next,
           prevPage: data.previous,
           total: Math.ceil(data.count / 10)
         }));
+        setInfoState((prevState) => ({
+          ...prevState,
+          searchData: data.results
+        }));
       } catch (error) {
         console.error('Fetching application data error: ', error);
-        // setError(true);
       } finally {
         setIsLoading(false);
-        console.log(state);
       }
     };
     fetchData();
-  }, [searchParams, savedQuery]);
+  }, [currentPage, currentQuery, savedQuery]);
 
-  // const errorElement = (
-  //   <>
-  //     <h2>Fetching application data error </h2>
-  //     <Button
-  //       onClick={() => {
-  //         setError(false);
-  //         navigate(-1);
-  //       }}
-  //     >
-  //       Return
-  //     </Button>
-  //   </>
-  // );
+  useEffect(() => {
+    if (
+      !Number.isNaN(currentPage) ||
+      Number.isInteger(currentPage) ||
+      currentPage <= MAIN_PAGE
+    ) {
+      searchParams.set(enumSearchParams.PAGE, currentPage.toString());
+      setSearchParams(searchParams);
+    }
+  }, [pageState, currentPage, searchParams, setSearchParams]);
+
+  const handlePageChange = useCallback(
+    (pageNumber: number): void => {
+      searchParams.set(enumSearchParams.PAGE, String(pageNumber));
+      setSearchParams(searchParams);
+    },
+    [setSearchParams, searchParams]
+  );
+
   return (
     <>
       <Header>
@@ -91,13 +95,16 @@ export const MainPage = () => {
       <Main className={styles.result}>
         <div className={styles.list}>
           <Pagination
-            currentPage={1}
+            currentPage={currentPage}
             onPageChange={handlePageChange}
-            totalPages={state.total}
+            totalPages={pageState.total}
           />
-          <Results data={state.searchData} isLoading={isLoading} />
+          {isLoading && <Loader />}
+          {!isLoading && (
+            <Results data={infoState.searchData} isLoading={isLoading} />
+          )}
         </div>
-        {2 + 2 && (
+        {currentCard && (
           <div className={styles.detailedView}>
             <Outlet />
           </div>
