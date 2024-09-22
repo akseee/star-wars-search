@@ -1,5 +1,5 @@
 export enum enumSearchParams {
-  NAME = 'name',
+  SEARCH = 'search',
   PAGE = 'page',
   CARD = 'card'
 }
