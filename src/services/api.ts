@@ -18,12 +18,13 @@ export const getFetchData = (
   searchQuery: string,
   page: number = MAIN_PAGE
 ): Promise<ApiResponse> => {
-  const params = new URLSearchParams({
-    page: page.toString()
-  });
+  const params = new URLSearchParams();
+
+  params.set('page', page.toString());
 
   if (searchQuery) {
-    params.append(enumSearchParams.NAME, searchQuery);
+    params.set(enumSearchParams.SEARCH, searchQuery);
+    params.delete(enumSearchParams.PAGE);
   }
 
   return fetch(`${URL}/?${params.toString()}`).then((res) =>
