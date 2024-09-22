@@ -27,7 +27,7 @@ export const Pagination: FC<PaginationProps> = ({
         Page {currentPage} of {totalPages}
       </span>
       <Button
-        disabled={currentPage === totalPages}
+        disabled={currentPage === totalPages || totalPages === 0}
         type='button'
         onClick={() => onPageChange(currentPage + 1)}
       >

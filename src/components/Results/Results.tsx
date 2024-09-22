@@ -19,11 +19,13 @@ export const Results: FC<ResultFieldProps> = ({ data }) => {
 
   return (
     <ul className={styles.list}>
+      {data.length == 0 && (
+        <div className={styles.empty}>Nothing is found! Try another name </div>
+      )}
       {data.map((item, index) => (
         <li className={styles.card} key={index}>
           <NavLink
             to={`?${updatedSearchParams.toString()}&${enumSearchParams.CARD}=${parseIdFromUrl(item.url)}`}
-            // className={({ isActive }) => (isActive ? `${styles.active}` : '')}
           >
             <PreviewCard item={item} />
           </NavLink>

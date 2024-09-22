@@ -5,25 +5,26 @@ import useStorageQuery from '../../hooks/useStorageQuery';
 import { SearchBar } from '../ui/SearchBar/SearchBar';
 import { Button } from '../ui/Button/Button';
 import styles from './Search.module.css';
+import { enumSearchParams } from '../../services/params';
 
 export const Search: FC = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(
-    searchParams.get('name') || ''
+    searchParams.get(enumSearchParams.SEARCH) || ''
   );
 
-  const [, setStorageQuery] = useStorageQuery('storageQuery', '');
+  const [, setStorageQuery] = useStorageQuery('storaged-query', '');
 
   const handleSubmit = () => {
     const trimmedQuery = searchQuery.trim();
     if (!trimmedQuery) {
-      searchParams.delete('name');
+      searchParams.delete(enumSearchParams.SEARCH);
       setStorageQuery('');
     } else {
-      searchParams.set('name', trimmedQuery);
-      setStorageQuery(trimmedQuery);
+      searchParams.set(enumSearchParams.SEARCH, searchQuery);
+      setStorageQuery(searchQuery);
     }
-    // setSearchParams(searchQuery);
+    setSearchParams(searchParams);
   };
 
   return (
