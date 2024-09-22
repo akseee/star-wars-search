@@ -32,11 +32,11 @@ const initialPageState: PageState = {
 export const MainPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const currentQuery = searchParams.get(enumSearchParams.NAME) || '';
+  const currentQuery = searchParams.get(enumSearchParams.SEARCH) || '';
   const currentPage = parseInt(searchParams.get(enumSearchParams.PAGE) || '1');
   const currentCard = searchParams.get(enumSearchParams.CARD || false);
 
-  const [savedQuery] = useStorageQuery('storaged-query', '');
+  const [savedQuery] = useStorageQuery('storaged-query', currentQuery);
 
   const [pageState, setPageState] = useState(initialPageState);
   const [infoState, setInfoState] = useState(initialInfoState);
@@ -70,14 +70,14 @@ export const MainPage = () => {
 
   useEffect(() => {
     if (
-      !Number.isNaN(currentPage) ||
+      (!savedQuery && !Number.isNaN(currentPage)) ||
       Number.isInteger(currentPage) ||
       currentPage <= MAIN_PAGE
     ) {
       searchParams.set(enumSearchParams.PAGE, currentPage.toString());
       setSearchParams(searchParams);
     }
-  }, [pageState, currentPage, searchParams, setSearchParams]);
+  }, [pageState, currentPage, searchParams, setSearchParams, savedQuery]);
 
   const handlePageChange = useCallback(
     (pageNumber: number): void => {
